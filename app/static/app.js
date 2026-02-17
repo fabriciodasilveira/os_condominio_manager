@@ -116,8 +116,13 @@ async function api(path, opts = {}) {
   });
 
   if (res.status === 401) {
-    logout();
-    throw new Error("Sessão expirada");
+    // Evita derrubar o usuário para tela de login por qualquer endpoint auxiliar.
+    // Faz logout automático apenas quando o endpoint de sessão falha.
+    if (path === "/api/auth/me") {
+      logout();
+      throw new Error("Sessão expirada");
+    }
+    throw new Error("Não autorizado para esta ação");
   }
 
   if (!res.ok) {
@@ -748,7 +753,7 @@ $("#login-form").addEventListener("input", () => {
   clearLoginError();
 });
 
-$("#register-form").addEventListener("submit", async (e) => {
+$("#register-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = new FormData(e.target);
   try {

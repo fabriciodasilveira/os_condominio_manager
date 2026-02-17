@@ -74,8 +74,13 @@ O projeto agora usa PostgreSQL por padrão. Configure via `.env`:
 - `DB_HOST`
 - `DB_PORT`
 - `DB_NAME`
+- `DB_EXTERNAL_PORT` (porta exposta para acessar de fora, ex.: DBeaver)
 
 Opcionalmente, você pode definir `DATABASE_URL` diretamente.
+
+Exemplo para evitar conflito com `5432` já ocupada:
+
+- `DB_EXTERNAL_PORT=5433` (ou `5434`)
 
 ## Deploy com Docker Compose
 
@@ -94,6 +99,14 @@ docker compose up -d --build
 3. Acessar aplicação:
 
 - [http://localhost:8182](http://localhost:8182)
+
+4. Acesso externo ao PostgreSQL (cliente SQL):
+
+- host: `localhost` (ou IP do servidor)
+- porta: valor de `DB_EXTERNAL_PORT` (padrão `5433`)
+- banco: `DB_NAME`
+- usuário: `DB_USER`
+- senha: `DB_PASSWORD`
 
 ### Modo desenvolvimento com reload
 
