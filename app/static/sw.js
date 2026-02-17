@@ -1,4 +1,4 @@
-const CACHE_NAME = "condominio-os-v16";
+const CACHE_NAME = "condominio-os-v17";
 const ASSETS = [
   "/",
   "/manifest.json",
