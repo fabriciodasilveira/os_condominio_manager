@@ -513,7 +513,7 @@ function initOpenMap() {
     attribution: "&copy; OpenStreetMap",
   }).addTo(state.map);
   state.mapMarkers = window.L.layerGroup().addTo(state.map);
-  state.map.setView([-22.892, -47.204], 15);
+  state.map.setView([-22.8926334, -47.2060689], 15);
   return true;
 }
 
