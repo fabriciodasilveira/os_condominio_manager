@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#073b4c" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icon-192.png" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>Associação Villa Flora</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 class="brand">
+        <img src="/static/logo.png" alt="Villa Flora" />
+      </h1>
+      <div class="topbar-right">
+        <div id="user-info"></div>
+        <button id="logout-btn" class="ghost hidden" type="button">Sair</button>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <section class="panel" id="auth-panel">
+        <h2>Login</h2>
+        <div id="login-error" class="flash-error hidden" role="alert"></div>
+        <form id="login-form" class="stack">
+          <input type="text" name="username" placeholder="Usuário" required />
+          <input type="password" name="password" placeholder="Senha" required />
+          <button type="submit">Entrar</button>
+        </form>
+
+        <!-- <details>
+          <summary>Criar conta</summary>
+          <form id="register-form" class="stack">
+            <input type="text" name="username" placeholder="Usuário" required />
+            <input type="text" name="full_name" placeholder="Nome completo" required />
+            <select name="role" required>
+              <option value="morador">Morador</option>
+              <option value="sindico">Síndico</option>
+              <option value="funcionario">Funcionário</option>
+            </select>
+            <input type="text" name="apartment" placeholder="Apartamento (morador)" />
+            <input type="password" name="password" placeholder="Senha (mín. 6)" required />
+            <button type="submit">Cadastrar</button>
+          </form>
+        </details> -->
+
+        
+      </section>
+
+      <section class="panel hidden" id="admin-panel">
+        <div class="panel-head">
+          <h2>Gerenciamento</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="admin-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <div id="subset-admin-block" class="hidden">
+            <div class="admin-grid">
+              <form id="subset-create-form" class="stack">
+                <h3>Cadastrar Subconjunto</h3>
+                <input type="text" name="name" placeholder="Nome do subconjunto (ex.: Condomínio 2)" required />
+                <button type="submit">Cadastrar Subconjunto</button>
+              </form>
+
+              <form id="manager-create-form" class="stack">
+                <h3>Cadastrar Síndico</h3>
+                <input type="text" name="username" placeholder="Usuário (login)" required />
+                <input type="text" name="full_name" placeholder="Nome completo" required />
+                <select name="subset_id" id="manager-subset-select" required>
+                  <option value="">Selecione o subconjunto</option>
+                </select>
+                <input type="password" name="password" placeholder="Senha inicial" required />
+                <button type="submit">Cadastrar Síndico</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="admin-grid">
+            <form id="resident-create-form" class="stack">
+              <h3>Cadastrar Morador</h3>
+              <input type="text" name="username" placeholder="Usuário (login)" required />
+              <input type="text" name="full_name" placeholder="Nome completo" required />
+              <select name="subset_id" id="resident-subset-select">
+                <option value="">Selecione o subconjunto</option>
+              </select>
+              <input type="text" name="unit_number" placeholder="Número da moradia" required />
+              <input type="number" step="any" name="latitude" placeholder="Latitude (opcional)" />
+              <input type="number" step="any" name="longitude" placeholder="Longitude (opcional)" />
+              <input type="password" name="password" placeholder="Senha inicial" required />
+              <button type="submit">Cadastrar</button>
+            </form>
+
+            <form id="resident-search-form" class="stack">
+              <h3>Pesquisar Morador</h3>
+              <input type="search" name="q" placeholder="Buscar por nome, usuário ou moradia" required />
+              <select name="subset_id" id="resident-search-subset-select">
+                <option value="">Todos os subconjuntos</option>
+              </select>
+              <button type="submit">Pesquisar</button>
+            </form>
+
+            <form id="resident-reset-form" class="stack">
+              <h3>Resetar Senha</h3>
+              <select name="resident_id" id="resident-select" required>
+                <option value="">Pesquise e selecione um morador</option>
+              </select>
+              <input type="password" name="password" placeholder="Nova senha" required />
+              <button type="submit">Resetar Senha</button>
+            </form>
+          </div>
+          <div id="subset-list" class="resident-list"></div>
+          <div id="resident-list" class="resident-list"></div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="create-panel">
+        <div class="panel-head">
+          <h2>Nova Ordem de Serviço</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="create-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <form id="os-form" class="stack">
+            <input type="text" name="title" placeholder="Título" required />
+            <textarea name="description" rows="4" placeholder="Descreva o problema" required></textarea>
+            <select name="category" required>
+              <option value="eletrica">Elétrica</option>
+              <option value="hidraulica">Hidráulica</option>
+              <option value="limpeza">Limpeza</option>
+              <option value="pintura">Pintura</option>
+              <option value="seguranca">Segurança</option>
+              <option value="outros">Outros</option>
+            </select>
+            <select name="priority" required>
+              <option value="baixa">Baixa</option>
+              <option value="media">Média</option>
+              <option value="alta">Alta</option>
+              <option value="urgente">Urgente</option>
+            </select>
+            <input type="file" name="image" accept="image/*" />
+            <button type="submit">Abrir OS</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="filter-panel">
+        <div class="panel-head">
+          <h2>Filtros</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="filter-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <form id="filter-form" class="stack inline">
+            <input type="search" name="q" placeholder="Buscar por texto" />
+            <select name="status_filter">
+              <option value="">Todos status</option>
+              <option value="backlog">Backlog</option>
+              <option value="fazendo">Fazendo</option>
+              <option value="pendentes">Pendentes</option>
+              <option value="concluido">Concluído</option>
+            </select>
+            <select name="category">
+              <option value="">Todas categorias</option>
+              <option value="eletrica">Elétrica</option>
+              <option value="hidraulica">Hidráulica</option>
+              <option value="limpeza">Limpeza</option>
+              <option value="pintura">Pintura</option>
+              <option value="seguranca">Segurança</option>
+              <option value="outros">Outros</option>
+            </select>
+            <select name="priority">
+              <option value="">Todas prioridades</option>
+              <option value="baixa">Baixa</option>
+              <option value="media">Média</option>
+              <option value="alta">Alta</option>
+              <option value="urgente">Urgente</option>
+            </select>
+            <button type="submit">Aplicar</button>
+            <button type="button" id="refresh-btn">Atualizar</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="reports-panel">
+        <div class="panel-head">
+          <h2>Acompanhamento</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="reports-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <div id="reports-content" class="cards"></div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="map-panel">
+        <div class="panel-head">
+          <h2>Mapa de OS Abertas</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="map-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <div id="map-info" class="hint">Carregando mapa...</div>
+          <div id="open-os-map"></div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="kanban-panel">
+        <div class="panel-head">
+          <h2>Dashboard Kanban</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="kanban-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <div class="kanban" id="kanban-board">
+            <div class="column" data-status="backlog"><h3>Backlog</h3><div class="column-body"></div></div>
+            <div class="column" data-status="fazendo"><h3>Fazendo</h3><div class="column-body"></div></div>
+            <div class="column" data-status="pendentes"><h3>Pendentes</h3><div class="column-body"></div></div>
+            <div class="column" data-status="concluido"><h3>Concluído</h3><div class="column-body"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="notifications-panel">
+        <div class="panel-head">
+          <h2>Notificações</h2>
+          <button class="panel-toggle" data-action="toggle-panel" data-panel-id="notifications-panel" type="button">Reduzir</button>
+        </div>
+        <div class="panel-body">
+          <div id="notifications-list" class="stack"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

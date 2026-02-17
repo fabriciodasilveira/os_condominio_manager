@@ -1,0 +1,22 @@
+{
+  "name": "Villa Flora",
+  "short_name": "Villa Flora",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ecf6f8",
+  "theme_color": "#073b4c",
+  "lang": "pt-BR",
+  "description": "Gestão de ordens de serviço do Villa Flora",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
