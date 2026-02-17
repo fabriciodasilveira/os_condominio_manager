@@ -25,7 +25,7 @@ services:
       - uploads_data:/app/app/uploads
 
   postgres:
-    image: postgres:16-alpine
+    image: public.ecr.aws/docker/library/postgres:15-alpine
     container_name: condominio_os_postgres
     environment:
       POSTGRES_DB: ${DB_NAME:-condominio_os}
