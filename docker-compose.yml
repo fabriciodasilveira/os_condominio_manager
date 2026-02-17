@@ -1,0 +1,47 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: condominio_os_api
+    ports:
+      - "8182:8000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      DB_USER: ${DB_USER:-condominio}
+      DB_PASSWORD: ${DB_PASSWORD:-condominio}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-condominio_os}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_CLAIMS_SUB: ${VAPID_CLAIMS_SUB:-mailto:admin@condominio.local}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - uploads_data:/app/app/uploads
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: condominio_os_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-condominio_os}
+      POSTGRES_USER: ${DB_USER:-condominio}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-condominio}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-condominio} -d ${DB_NAME:-condominio_os}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:

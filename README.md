@@ -35,7 +35,7 @@ Aplicação PWA para gestão de ordens de serviço de condomínio com backend em
 
 ## Stack
 
-- Backend: FastAPI + SQLAlchemy + SQLite + JWT
+- Backend: FastAPI + SQLAlchemy + PostgreSQL + JWT
 - Frontend: HTML/CSS/JS puro (PWA)
 - Push: `pywebpush` (VAPID)
 
@@ -58,12 +58,48 @@ cp .env.example .env
 3. Subir API:
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8182
 ```
 
 4. Abrir no navegador:
 
-- [http://localhost:8000](http://localhost:8000)
+- [http://localhost:8182](http://localhost:8182)
+
+## Banco PostgreSQL
+
+O projeto agora usa PostgreSQL por padrão. Configure via `.env`:
+
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_HOST`
+- `DB_PORT`
+- `DB_NAME`
+
+Opcionalmente, você pode definir `DATABASE_URL` diretamente.
+
+## Deploy com Docker Compose
+
+1. Criar `.env`:
+
+```bash
+cp .env.example .env
+```
+
+2. Subir serviços (API + PostgreSQL):
+
+```bash
+docker compose up -d --build
+```
+
+3. Acessar aplicação:
+
+- [http://localhost:8182](http://localhost:8182)
+
+### Modo desenvolvimento com reload
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
 
 ## Usuários demo criados automaticamente
 
