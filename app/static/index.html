@@ -129,6 +129,7 @@
               <option value="hidraulica">Hidráulica</option>
               <option value="limpeza">Limpeza</option>
               <option value="pintura">Pintura</option>
+              <option value="estrutural">Estrutural</option>
               <option value="seguranca">Segurança</option>
               <option value="outros">Outros</option>
             </select>
@@ -204,13 +205,13 @@
 
       <section class="panel hidden" id="kanban-panel">
         <div class="panel-head">
-          <h2>Dashboard Kanban</h2>
+          <h2>Quadro de acompanhamento</h2>
           <button class="panel-toggle" data-action="toggle-panel" data-panel-id="kanban-panel" type="button">Reduzir</button>
         </div>
         <div class="panel-body">
           <div class="kanban" id="kanban-board">
-            <div class="column" data-status="backlog"><h3>Backlog</h3><div class="column-body"></div></div>
-            <div class="column" data-status="fazendo"><h3>Fazendo</h3><div class="column-body"></div></div>
+            <div class="column" data-status="backlog"><h3>Aguardando</h3><div class="column-body"></div></div>
+            <div class="column" data-status="fazendo"><h3>Execução</h3><div class="column-body"></div></div>
             <div class="column" data-status="pendentes"><h3>Pendentes</h3><div class="column-body"></div></div>
             <div class="column" data-status="concluido"><h3>Concluído</h3><div class="column-body"></div></div>
           </div>
